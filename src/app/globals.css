@@ -1,0 +1,326 @@
+@import "tailwindcss";
+
+/* ── Tema ─────────────────────────────────────────────
+   Noite (padrão): biblioteca à luz de abajur.
+   Manhã: papel quente e carvalho claro.            */
+:root,
+:root[data-theme="dark"] {
+  --bg: #120d08;
+  --bg-2: #1c140d;
+  --ink: #f1e7d6;
+  --muted: #a4937c;
+  --faint: rgba(241, 231, 214, 0.1);
+  --accent: #dcab63;
+  --accent-ink: #1a1209;
+  --glow: rgba(255, 168, 76, 0.2);
+  --glow-2: rgba(255, 200, 140, 0.07);
+  --panel: rgba(22, 16, 10, 0.78);
+  --plank-top: #82583a;
+  --plank-top-2: #5a3b22;
+  --plank-front: #4d3119;
+  --plank-shadow: rgba(0, 0, 0, 0.6);
+  --paper: #efe4cd;
+  --paper-2: #d9ccb0;
+  --ribbon: #b8322b;
+  --grain-opacity: 0.22;
+  /* status: lendo = azul, lido = verde, quero ler = lilás */
+  --st-lendo-fg: #a9c9f2;
+  --st-lendo-bg: rgba(96, 146, 214, 0.18);
+  --st-lendo-bd: rgba(126, 170, 230, 0.38);
+  --st-lido-fg: #a8d8b0;
+  --st-lido-bg: rgba(98, 166, 114, 0.17);
+  --st-lido-bd: rgba(128, 190, 142, 0.36);
+  --st-fila-fg: #cdb4ec;
+  --st-fila-bg: rgba(164, 124, 214, 0.16);
+  --st-fila-bd: rgba(184, 150, 228, 0.36);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #ece4d7;
+  --bg-2: #e2d7c6;
+  --ink: #2a221b;
+  --muted: #7d6f5f;
+  --faint: rgba(42, 34, 27, 0.1);
+  --accent: #9a582a;
+  --accent-ink: #fbf6ee;
+  --glow: rgba(255, 244, 222, 0.85);
+  --glow-2: rgba(255, 255, 255, 0.4);
+  --panel: rgba(247, 242, 233, 0.8);
+  --plank-top: #e2c9a3;
+  --plank-top-2: #c4a276;
+  --plank-front: #b8966a;
+  --plank-shadow: rgba(80, 55, 25, 0.32);
+  --paper: #f7f0e1;
+  --paper-2: #e6dbc4;
+  --ribbon: #a8291f;
+  --grain-opacity: 0.16;
+  --st-lendo-fg: #2c5b93;
+  --st-lendo-bg: #dde8f6;
+  --st-lendo-bd: #b9cfea;
+  --st-lido-fg: #2e6a3c;
+  --st-lido-bg: #deecdf;
+  --st-lido-bd: #bcd8c0;
+  --st-fila-fg: #684896;
+  --st-fila-bg: #ece3f6;
+  --st-fila-bd: #d5c4ec;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-panel: var(--panel);
+  --font-display: var(--font-instrument);
+  --font-sans: var(--font-dm-sans);
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-optical-sizing: auto;
+  transition:
+    background-color 600ms ease,
+    color 600ms ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Ambiente: abajur, parede em painéis, vinheta */
+.ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60% 45% at 50% -5%, var(--glow), transparent 70%),
+    radial-gradient(40% 30% at 12% 20%, var(--glow-2), transparent 70%),
+    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+  transition: background 600ms ease;
+}
+:root[data-theme="light"] .ambient {
+  background:
+    radial-gradient(60% 45% at 50% -5%, var(--glow), transparent 70%),
+    radial-gradient(40% 30% at 85% 10%, var(--glow-2), transparent 70%),
+    radial-gradient(120% 90% at 50% 40%, transparent 60%, rgba(90, 60, 30, 0.12) 100%);
+}
+.ambient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 180px,
+    rgba(0, 0, 0, 0.1) 180px 182px,
+    rgba(255, 255, 255, 0.015) 182px 184px
+  );
+}
+:root[data-theme="light"] .ambient::before {
+  opacity: 0.1;
+}
+
+/* Grão de papel/filme */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── Prateleira flutuante de madeira ───────────────────────────
+   Veios: ruído SVG esticado na horizontal, aplicado como sombra
+   sobre a cor da madeira do tema (nogueira à noite, carvalho de dia). */
+:root {
+  --wood-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='80'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0016 0.085' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.05 0 0 0 -0.46'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+  --wood-grain-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='40'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.003 0.22' numOctaves='3' seed='21'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.9 0 0 0 -0.52'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+}
+
+/* fileira rolando: livros ignoram o cursor até parar (Shelf.tsx) */
+[data-scrolling] [data-spine-id] {
+  pointer-events: none;
+}
+
+.shelf {
+  position: relative;
+  z-index: 0;
+  margin-top: -16px; /* os livros pousam sobre o fundo do tampo */
+  pointer-events: none;
+}
+/* tampo, visto levemente de cima (trapézio = perspectiva) */
+.shelf-top {
+  position: relative;
+  height: 30px;
+  clip-path: polygon(1.2% 0, 98.8% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.12) 38%, transparent 62%),
+    var(--wood-grain-2),
+    var(--wood-grain),
+    linear-gradient(180deg, var(--plank-top-2), var(--plank-top));
+  background-size:
+    100% 100%,
+    1200px 30px,
+    1200px 60px,
+    100% 100%;
+  transition: background-color 600ms ease;
+}
+/* reflexo suave de luz no tampo */
+.shelf-top::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 140% at 50% 120%, rgba(255, 236, 200, 0.14), transparent 70%);
+}
+/* frente, com espessura e friso de luz na quina */
+.shelf-front {
+  position: relative;
+  height: 26px;
+  border-radius: 0 0 3px 3px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0, rgba(255, 255, 255, 0.06) 1.5px, transparent 3px),
+    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.28)),
+    var(--wood-grain),
+    linear-gradient(180deg, var(--plank-front), color-mix(in oklab, var(--plank-front) 78%, black));
+  background-size:
+    100% 100%,
+    100% 100%,
+    1200px 52px,
+    100% 100%;
+  background-position: 0 0, 0 0, -340px -14px, 0 0;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.25),
+    inset 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+/* sombra projetada na parede */
+.shelf-front::after {
+  content: "";
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 60%;
+  height: 46px;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--plank-shadow);
+  filter: blur(18px);
+}
+/* sombra dos livros na parede, logo acima do tampo */
+.shelf-wall-shadow {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 20px;
+  height: 70%;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.16), transparent);
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  filter: blur(6px);
+}
+:root[data-theme="light"] .shelf-wall-shadow {
+  background: linear-gradient(0deg, rgba(80, 55, 25, 0.12), transparent);
+}
+
+/* Texto das anotações */
+.notes h1,
+.notes h2,
+.notes h3 {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.notes h1 {
+  font-size: 1.6rem;
+  margin: 1.6rem 0 0.6rem;
+}
+.notes h2 {
+  font-size: 1.45rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.notes h3 {
+  font-size: 1.3rem;
+  font-style: italic;
+  margin: 1.4rem 0 0.5rem;
+}
+.notes > :first-child {
+  margin-top: 0;
+}
+.notes p {
+  margin: 0.6rem 0;
+}
+.notes ul,
+.notes ol {
+  margin: 0.4rem 0 0.8rem;
+  padding-left: 1.1rem;
+}
+.notes ul {
+  list-style: none;
+}
+.notes ul > li {
+  position: relative;
+  margin: 0.45rem 0;
+}
+.notes ul > li::before {
+  content: "";
+  position: absolute;
+  left: -0.95rem;
+  top: 0.62em;
+  width: 5px;
+  height: 1px;
+  background: var(--accent);
+}
+.notes ol {
+  list-style: decimal;
+}
+.notes strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.notes blockquote {
+  border-left: 1px solid var(--accent);
+  padding-left: 0.9rem;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: 1.15rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

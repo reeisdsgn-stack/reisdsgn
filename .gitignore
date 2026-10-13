@@ -1,0 +1,28 @@
+# Dependências e build
+/node_modules
+/.next
+/out
+/build
+
+# Segredos e configurações locais
+.env*
+!.env.example
+*.pem
+
+# Dados pessoais e importações
+/notion-export
+/src/data
+/public/covers
+*.csv
+*.zip
+
+# Ferramentas e sistema
+/.vercel
+/.sites-runtime
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
